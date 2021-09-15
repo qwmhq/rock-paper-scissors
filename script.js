@@ -11,8 +11,8 @@ function capitalize(str) {
 function singleRound(playerSelection, computerSelection) {
 
     if ( (playerSelection === 'Rock' && computerSelection === 'Scissors') || 
-        (playerSelection === 'Paper' && computerSelection === 'Rock') ||
-        (playerSelection === 'Scissors' && computerSelection === 'Paper') )  {
+            (playerSelection === 'Paper' && computerSelection === 'Rock') ||
+            (playerSelection === 'Scissors' && computerSelection === 'Paper') )  {
         return `You win! ${playerSelection} beats ${computerSelection}`;
     } else if (playerSelection === computerSelection) {
         return 'You draw this round!';
