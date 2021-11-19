@@ -1,54 +1,69 @@
+let playerScore = 0, computerScore = 0;
+
 function computerPlay() {
-    let options = ['Rock', 'Paper', 'Scissors'];
+    let options = ['rock', 'paper', 'scissors'];
     let randomIndex = Math.floor(Math.random() * options.length);
     return options[randomIndex];
 }
 
-function capitalize(str) {
-    return str[0].toUpperCase() + str.slice(1, str.length)
-}
+function playRound(playerSelection, computerSelection) {
 
-function singleRound(playerSelection, computerSelection) {
-
-    if ( (playerSelection === 'Rock' && computerSelection === 'Scissors') || 
-            (playerSelection === 'Paper' && computerSelection === 'Rock') ||
-            (playerSelection === 'Scissors' && computerSelection === 'Paper') )  {
-        return `You win! ${playerSelection} beats ${computerSelection}`;
+    if ( (playerSelection === 'rock' && computerSelection === 'scissors') || 
+            (playerSelection === 'paper' && computerSelection === 'rock') ||
+            (playerSelection === 'scissors' && computerSelection === 'paper') )  {
+        return 'win';
     } else if (playerSelection === computerSelection) {
-        return 'You draw this round!';
-    } else return `You lose! ${computerSelection} beats ${playerSelection}`;
+        return 'draw';
+    } else return 'lose';
 
 }
 
-function game() {
-
-    let computerSelection, playerSelection;
-    let roundResult;
-    let playerScore = 0, computerScore = 0;
-    let options = ['Rock', 'Paper', 'Scissors'];
-    for (let i = 1; i <= 5; i ++) {
-        computerSelection = computerPlay();
-        playerSelection = prompt('What would you like to choose this round?');
-        playerSelection = capitalize(playerSelection);
-        if ( !(options.includes(playerSelection)) ) {
-            console.log('Invalid input!');
-        } else {
-            roundResult = singleRound(playerSelection, computerSelection);
-            if (roundResult === `You win! ${playerSelection} beats ${computerSelection}`) {
-                playerScore++;
-            } else if (roundResult === `You lose! ${computerSelection} beats ${playerSelection}`) {
-                computerScore++;
-            }
-            console.log(roundResult);
-            console.log(`Player ${playerScore} : ${computerScore} Computer`);
-        }
+function optionClick(e) {
+    let playerSelection = e.target.textContent;
+    let computerSelection = computerPlay();
+    roundResult = playRound(playerSelection, computerSelection);
+    if (roundResult  === 'win') {
+        playerScore++;
+        commentary.textContent = `${playerSelection} beats ${computerSelection}, you win!`;
+    } else if (roundResult === 'lose') {
+        computerScore++;
+        commentary.textContent = `${computerSelection} beats ${playerSelection}, you lose!`;
+    } else {
+        commentary.textContent = 'it\'s a tie';
     }
+    scoreboard.textContent = `player ${playerScore} : ${computerScore} computer`;
 
-    console.log(`The final score is ${playerScore} : ${computerScore}`)
-    if (playerScore > computerScore) {
-        console.log('Player wins!');
-    } else if (playerScore < computerScore) {
-        console.log('Computer wins!');
-    } else console.log('The game ended in a draw!');
-
+    if (playerScore === 5) {
+        commentary.textContent = 'You win!';
+        displayRestartButton();
+    } else if (computerScore === 5) {
+        commentary.textContent = 'You lose!';
+        displayRestartButton();
+    }
 }
+
+function displayRestartButton() {
+    options.forEach((option) => option.style.display = 'none');
+    restartButton.style.display = 'block';
+    
+}
+
+function restartGame() {
+    playerScore = 0;
+    computerScore = 0;
+    scoreboard.textContent = `player ${playerScore} : ${computerScore} computer`;
+    restartButton.style.display = 'none';
+    options.forEach((option) => option.style.display = 'inline');
+    commentary.textContent = '';
+}
+
+const container = document.querySelector('.container');
+const scoreboard = document.querySelector('div[class="scoreboard"');
+const commentary = document.querySelector('div[class="commentary"]');
+const options = document.querySelectorAll('button[class="option"]');
+options.forEach((option) => option.addEventListener('click', optionClick));
+const restartButton = document.createElement('button');
+restartButton.textContent = 'restart game';
+restartButton.addEventListener('click', restartGame);
+restartButton.style.display = 'none';
+container.appendChild(restartButton);
